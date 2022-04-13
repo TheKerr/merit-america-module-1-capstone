@@ -31,17 +31,18 @@ public class VendingMachineCLI {
 			String choice = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
 
 			if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
-				this.displayVendingMachineItems();
+				System.out.println(vendingMachine.displayVendingMachineItems());
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
 				// do purchase
 				while (true) {
-					choice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS, "Current money provided: " + formatMoney(vendingMachine.getCurrentBalance()));
+					choice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS, "Current money provided: " + VendingMachine.formatMoney(vendingMachine.getCurrentBalance()));
 					System.out.println();
 					if (choice.equals(PURCHASE_MENU_OPTION_FEED_MONEY)) {
-						feedMoney();
+						vendingMachine.feedMoney();
 					} else if (choice.equals(PURCHASE_MENU_OPTION_SELECT_PRODUCT)) {
-						selectProduct();
+						vendingMachine.selectProduct();
 					} else if (choice.equals(PURCHASE_MENU_OPTION_FINISH_TRANSACTION)) {
+						vendingMachine.finishTransaction();
 						break;
 					}
 				}
@@ -49,51 +50,6 @@ public class VendingMachineCLI {
 		}
 	}
 
-	public void selectProduct() {
-		displayVendingMachineItems();
-		System.out.println();
-		System.out.println("Please make your selection: ");
-		Scanner inputScanner = new Scanner(System.in);
-		String input = inputScanner.nextLine();
-		VendingMachineItem itemSelected = vendingMachine.getItem(input);
-		if (itemSelected == null) {
-			System.err.println("Invalid item selected");
-			return;
-		}
-		if (itemSelected.getQuantity() == 0) {
-			System.err.println("Item sold out");
-			return;
-		}
-		String vendSound = itemSelected.vend();
-		System.out.println(vendSound);
-	}
-
-	public void feedMoney() {
-		System.out.println();
-		System.out.println("This machine accepts $1, $2, $5, & $10");
-		System.out.println("Please feed money into the machine: ");
-		Scanner inputScanner = new Scanner(System.in);
-		int input = inputScanner.nextInt();
-		if (input != 1 && input != 2 && input != 5 && input != 10) {
-			System.err.println("Invalid dollar amount.");
-			return;
-		} else {
-			vendingMachine.addToBalance(input);
-		}
-
-	}
-
-	public void displayVendingMachineItems() {
-		for(Map.Entry<String, VendingMachineItem> itemEntry : vendingMachine.getItems().entrySet()) {
-			VendingMachineItem item = itemEntry.getValue();
-			System.out.println(item.getId() + " " + item.getName() + " " + formatMoney(item.getPrice()) + " " + "Stock: " + (item.getQuantity() > 0 ? item.getQuantity() : "Sold out"));
-		}
-	}
-
-	public static String formatMoney(BigDecimal money) {
-		NumberFormat formatter = NumberFormat.getCurrencyInstance();
-		return formatter.format(money);
-	}
 
 	public void readVendingMachineData() {
 		try (Scanner fileScanner = new Scanner(new File("capstone/vendingmachine.csv"))) {

@@ -8,6 +8,7 @@ public class VendingMachineItem {
     private BigDecimal price;
     private Consumable type;
     private String id;
+    private static final int DEFAULT_QUANTITY = 5;
 
     private int quantity;
 
@@ -16,7 +17,7 @@ public class VendingMachineItem {
         this.price = price;
         this.type = type;
         this.id = id;
-        this.quantity = 5;
+        this.quantity = DEFAULT_QUANTITY;
     }
 
     public int getQuantity() {
