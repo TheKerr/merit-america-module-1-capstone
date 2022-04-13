@@ -27,6 +27,9 @@ public class VendingMachineCLI {
 	}
 
 	public void run() {
+
+		VendingLog.initialize();
+
 		while (true) {
 			String choice = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
 

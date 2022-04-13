@@ -2,6 +2,8 @@ package com.techelevator;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -43,28 +45,23 @@ public class VendingMachine {
     }
 
     public void finishTransaction() {
-        calculateChange(this.currentBalance);
-    }
-
-    private Map<String, Integer> calculateChange(BigDecimal change) {
-        Map<String, Integer> changeMap = new HashMap<>();
-
         System.out.println("Your change: " + this.getCurrentBalance());
 
-        changeMap.put("dollars", change.intValue());
+        BigDecimal change = this.getCurrentBalance();
+        BigDecimal startingBalance = this.getCurrentBalance();
+        int dollars = change.intValue();
         this.setCurrentBalance(change.subtract(new BigDecimal(change.intValue())));
 
         int numQuarters = numberOfMoney(new BigDecimal("0.25"));
         int numDimes = numberOfMoney(new BigDecimal("0.10"));
         int numNickles = numberOfMoney(new BigDecimal("0.05"));
-        changeMap.put("quarters", numQuarters);
-        changeMap.put("dimes", numDimes);
-        changeMap.put("nickels", numNickles);
-        System.out.println("Dollars: " + changeMap.get("dollars"));
+        System.out.println("Dollars: " + dollars);
         System.out.println("Quarters: " + numQuarters);
-        System.out.println("dimes: " + numDimes);
-        System.out.println("nickels: " + numNickles);
-        return changeMap;
+        System.out.println("Dimes: " + numDimes);
+        System.out.println("Nickels: " + numNickles);
+
+        VendingLog.purchaseLog(LocalDateTime.now(), "GIVE CHANGE", startingBalance, this.getCurrentBalance());
+        VendingLog.endTransaction();
     }
 
     private Integer numberOfMoney(BigDecimal coinValue) {
@@ -81,6 +78,7 @@ public class VendingMachine {
         System.out.println("Please make your selection: ");
         Scanner inputScanner = new Scanner(System.in);
         String input = inputScanner.nextLine();
+        BigDecimal startingBalance = this.getCurrentBalance();
         VendingMachineItem itemSelected = this.getItem(input);
         if (itemSelected == null) {
             System.err.println("Invalid item selected");
@@ -92,6 +90,8 @@ public class VendingMachine {
         }
         if (this.getCurrentBalance().compareTo(itemSelected.getPrice()) >= 0) {
             this.addToBalance(itemSelected.getPrice().negate());
+            itemSelected.setQuantitySold(itemSelected.getQuantitySold() + 1);
+            VendingLog.purchaseLog(LocalDateTime.now(), itemSelected.getName() + " " + itemSelected.getId(), startingBalance, this.getCurrentBalance());
             System.out.println(this.getCurrentBalance());
             String vendSound = itemSelected.vend();
             System.out.println(vendSound);
@@ -111,7 +111,9 @@ public class VendingMachine {
             System.err.println("Invalid dollar amount.");
             return;
         } else {
-            this.addToBalance(new BigDecimal(input));
+            BigDecimal inputBD = new BigDecimal(input);
+            this.addToBalance(inputBD);
+            VendingLog.purchaseLog(LocalDateTime.now(), "FEED MONEY", inputBD, this.getCurrentBalance());
         }
 
     }

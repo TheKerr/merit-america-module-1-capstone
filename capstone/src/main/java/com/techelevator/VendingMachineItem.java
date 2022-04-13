@@ -9,6 +9,7 @@ public class VendingMachineItem {
     private Consumable type;
     private String id;
     private static final int DEFAULT_QUANTITY = 5;
+    private int quantitySold;
 
     private int quantity;
 
@@ -18,6 +19,15 @@ public class VendingMachineItem {
         this.type = type;
         this.id = id;
         this.quantity = DEFAULT_QUANTITY;
+        this.quantitySold = 0;
+    }
+
+    public void setQuantitySold(int quantitySold) {
+        this.quantitySold = quantitySold;
+    }
+
+    public int getQuantitySold() {
+        return quantitySold;
     }
 
     public int getQuantity() {
