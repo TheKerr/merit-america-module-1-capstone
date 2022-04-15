@@ -89,6 +89,33 @@ public class MenuTest {
 		Assert.assertEquals(expected, output.toString());
 	}
 
+	@Test
+	public void does_not_display_hidden_menu_items() {
+		Object[] options = new Object[] { Integer.valueOf(3), "Blind", "Mice" };
+		Object[] hiddenOptions = new Object[] { "Sales Report" };
+		Menu menu = getMenuForTesting();
+
+		menu.getChoiceFromOptions(options, hiddenOptions);
+
+		String expected = System.lineSeparator() + "1) " + options[0].toString() + System.lineSeparator() + "2) " + options[1].toString() + System.lineSeparator() + "3) "
+				+ options[2].toString() + System.lineSeparator() + System.lineSeparator() + "Please choose an option >>> ";
+		Assert.assertEquals(expected, output.toString());
+	}
+
+	@Test
+	public void displays_additional_menu_info() {
+		Object[] options = new Object[] { Integer.valueOf(3), "Blind", "Mice" };
+		String additionalInfo = "Current Balance: $4.00";
+		Menu menu = getMenuForTesting();
+
+		menu.getChoiceFromOptions(options, additionalInfo);
+
+		String expected = System.lineSeparator() + "1) " + options[0].toString() + System.lineSeparator() + "2) " + options[1].toString() + System.lineSeparator() + "3) "
+				+ options[2].toString() + System.lineSeparator() + System.lineSeparator()
+				+ additionalInfo + System.lineSeparator() + System.lineSeparator() + "Please choose an option >>> ";
+		Assert.assertEquals(expected, output.toString());
+	}
+
 	private Menu getMenuForTestingWithUserInput(String userInput) {
 		ByteArrayInputStream input = new ByteArrayInputStream(String.valueOf(userInput).getBytes());
 		return new Menu(input, output);

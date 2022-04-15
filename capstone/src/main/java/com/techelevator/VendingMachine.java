@@ -75,11 +75,7 @@ public class VendingMachine {
         return coinCounter;
     }
 
-    public void selectProduct() {
-        System.out.println(displayVendingMachineItems());
-        System.out.println("Please make your selection: ");
-        Scanner inputScanner = new Scanner(System.in);
-        String input = inputScanner.nextLine();
+    public void selectProduct(String input) {
         BigDecimal startingBalance = this.getCurrentBalance();
         VendingMachineItem itemSelected = this.getItem(input);
         if (itemSelected == null) {

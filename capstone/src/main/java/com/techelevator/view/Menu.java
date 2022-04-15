@@ -24,6 +24,22 @@ public class Menu {
 		return choice;
 	}
 
+	public Object getChoiceFromOptions(Object[] options, Object[] hiddenOptions) {
+		Object choice = null;
+		while (choice == null) {
+			displayMenuOptions(options);
+			Object[] totalOptions = new Object[options.length + hiddenOptions.length];
+			for(int i = 0; i < options.length; i++) {
+				totalOptions[i] = options[i];
+			}
+			for (int i = 0; i < hiddenOptions.length; i++) {
+				totalOptions[options.length + i] = hiddenOptions[i];
+			}
+			choice = getChoiceFromUserInput(totalOptions);
+		}
+		return choice;
+	}
+
 	public Object getChoiceFromOptions(Object[] options, String additionalInfo) {
 		Object choice = null;
 		while (choice == null) {
