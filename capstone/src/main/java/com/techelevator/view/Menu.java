@@ -60,6 +60,7 @@ public class Menu {
 		out.flush();
 	}
 
+
 	private void displayMenuOptions(Object[] options, String additionalInfo) {
 		out.println();
 		for (int i = 0; i < options.length; i++) {

@@ -14,10 +14,12 @@ public class VendingMachine {
     private Map<String, VendingMachineItem> items;
 
     private BigDecimal currentBalance;
+    private BigDecimal totalSales;
 
     public VendingMachine() {
         items = new TreeMap<String, VendingMachineItem>();
         currentBalance = new BigDecimal(0);
+        totalSales = new BigDecimal(0);
     }
 
     public void addItem(VendingMachineItem item) {
@@ -91,6 +93,7 @@ public class VendingMachine {
         if (this.getCurrentBalance().compareTo(itemSelected.getPrice()) >= 0) {
             this.addToBalance(itemSelected.getPrice().negate());
             itemSelected.setQuantitySold(itemSelected.getQuantitySold() + 1);
+            totalSales = totalSales.add(itemSelected.getPrice());
             VendingLog.purchaseLog(LocalDateTime.now(), itemSelected.getName() + " " + itemSelected.getId(), startingBalance, this.getCurrentBalance());
             System.out.println(this.getCurrentBalance());
             String vendSound = itemSelected.vend();
@@ -133,5 +136,10 @@ public class VendingMachine {
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
         return formatter.format(money);
     }
+
+    public BigDecimal getTotalSales() {
+        return totalSales;
+    }
+
 
 }
