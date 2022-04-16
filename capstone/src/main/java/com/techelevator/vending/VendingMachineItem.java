@@ -1,4 +1,6 @@
-package com.techelevator;
+package com.techelevator.vending;
+
+import com.techelevator.items.Consumable;
 
 import java.math.BigDecimal;
 
