@@ -9,8 +9,6 @@ import org.junit.Test;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 
-import com.techelevator.view.Menu;
-
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MenuTest {
 
@@ -115,6 +113,7 @@ public class MenuTest {
 				+ additionalInfo + System.lineSeparator() + System.lineSeparator() + "Please choose an option >>> ";
 		Assert.assertEquals(expected, output.toString());
 	}
+
 
 	private Menu getMenuForTestingWithUserInput(String userInput) {
 		ByteArrayInputStream input = new ByteArrayInputStream(String.valueOf(userInput).getBytes());

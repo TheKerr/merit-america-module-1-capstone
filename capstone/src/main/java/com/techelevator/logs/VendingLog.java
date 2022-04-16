@@ -1,4 +1,6 @@
-package com.techelevator;
+package com.techelevator.logs;
+
+import com.techelevator.vending.VendingMachine;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -8,6 +10,10 @@ import java.time.format.DateTimeFormatter;
 public class VendingLog {
 
     private static File logFile;
+
+    public VendingLog() {
+        initialize();
+    }
 
     public static void initialize() {
         logFile = new File("Log.txt");
