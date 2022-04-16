@@ -20,9 +20,6 @@ public class VendingTest {
         vendingMachine = new VendingMachine("vendingmachine.csv");
     }
 
-    @After
-    public void endtest() {vendingMachine.finishTransaction();}
-
     @Test
     public void check_balance_is_zero_after_transaction_finished() {
         BigDecimal expected = new BigDecimal("0.00");
