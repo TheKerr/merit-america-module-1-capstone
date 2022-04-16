@@ -23,7 +23,7 @@ public class VendingMachineCLI {
 
 	public VendingMachineCLI(Menu menu) {
 		this.menu = menu;
-		this.vendingMachine = new VendingMachine("capstone/vendingmachine.csv");
+		this.vendingMachine = new VendingMachine("capstone/src/main/resources/vendingmachine.csv");
 	}
 
 	public VendingMachine getVendingMachine() {

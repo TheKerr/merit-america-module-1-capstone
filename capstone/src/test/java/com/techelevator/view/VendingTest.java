@@ -16,7 +16,7 @@ public class VendingTest {
 
     @Before
     public void setup() {
-        vendingMachine = new VendingMachine("vendingmachine.csv");
+        vendingMachine = new VendingMachine("src/test/resources/vendingmachine.csv");
     }
 
     @Test
