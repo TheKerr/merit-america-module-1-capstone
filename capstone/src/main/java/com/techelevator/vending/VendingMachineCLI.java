@@ -23,11 +23,7 @@ public class VendingMachineCLI {
 
 	public VendingMachineCLI(Menu menu) {
 		this.menu = menu;
-		this.vendingMachine = new VendingMachine("capstone/src/main/resources/vendingmachine.csv");
-	}
-
-	public VendingMachine getVendingMachine() {
-		return vendingMachine;
+		this.vendingMachine = new VendingMachine("capstone/src/main/resources/vendingmachine.csv", System.out);
 	}
 
 	public void run() {
@@ -55,8 +51,7 @@ public class VendingMachineCLI {
 						// show user items for sale, prompt for input of the selected item
 						System.out.println(vendingMachine.displayVendingMachineItems());
 						System.out.println("Please make your selection: ");
-						Scanner inputScanner = new Scanner(System.in);
-						String input = inputScanner.nextLine();
+						String input = menu.getIn().nextLine();
 						vendingMachine.selectProduct(input);
 					} else if (choice.equals(PURCHASE_MENU_OPTION_FINISH_TRANSACTION)) {
 						// user finishes transaction, change is returned and transaction log recorded, returns to main menu

@@ -1,10 +1,16 @@
 package com.techelevator.vending;
 
+import com.techelevator.exceptions.InsufficientBalanceException;
+import com.techelevator.exceptions.InvalidItemException;
+import com.techelevator.exceptions.UserInputException;
+import com.techelevator.logs.ErrorLog;
 import com.techelevator.logs.VendingLog;
 import com.techelevator.items.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
@@ -19,14 +25,17 @@ public class VendingMachine {
     private BigDecimal currentBalance;
     private BigDecimal totalSales;
     private VendingLog vendingLog;
+    private ErrorLog errorLog;
+    private PrintWriter out;
 
-    public VendingMachine(String datapath) {
+    public VendingMachine(String datapath, OutputStream output) {
         items = new TreeMap<String, VendingMachineItem>();
         currentBalance = new BigDecimal(0);
         totalSales = new BigDecimal(0);
-        vendingLog = new VendingLog();
-        vendingLog.initialize();
+        vendingLog = new VendingLog("Log.txt");
+        errorLog = new ErrorLog("ErrorLog.txt");
         stockVendingMachine(datapath);
+        this.out = new PrintWriter(output);
     }
 
     public void addVendingItem(VendingMachineItem item) {
@@ -79,37 +88,48 @@ public class VendingMachine {
     }
 
     public void feedMoney(String moneyIn) {
-        if (!(moneyIn.equals("1")) && !(moneyIn.equals("2")) && !(moneyIn.equals("5")) && !(moneyIn.equals("10"))) {
-            System.err.println("Invalid dollar amount.");
-            return;
-        } else {
-            BigDecimal inputBD = new BigDecimal(moneyIn);
-            this.addToCurrentBalance(inputBD);
-            vendingLog.purchaseLog(LocalDateTime.now(), "FEED MONEY", inputBD, this.getCurrentBalance());
+        try {
+            if (!(moneyIn.equals("1")) && !(moneyIn.equals("2")) && !(moneyIn.equals("5")) && !(moneyIn.equals("10"))) {
+                throw new UserInputException("Machine only accepts $1, $2, $5, $10");
+            } else {
+                BigDecimal inputBD = new BigDecimal(moneyIn);
+                this.addToCurrentBalance(inputBD);
+                vendingLog.purchaseLog("FEED MONEY", inputBD, this.getCurrentBalance());
+            }
+        } catch (Exception e) {
+            System.err.println();
+            System.err.println(e.getMessage());
+            errorLog.logError(e);
         }
     }
 
     public void selectProduct(String input) {
         BigDecimal startingBalance = this.getCurrentBalance();
         VendingMachineItem itemSelected = this.getVendingItem(input);
-        if (itemSelected == null) {
-            System.err.println("Invalid item selected");
-            return;
-        }
-        if (itemSelected.getQuantity() == 0) {
-            System.err.println("Item " + itemSelected.getId() + " sold out");
-            return;
-        }
-        if (this.getCurrentBalance().compareTo(itemSelected.getPrice()) >= 0) {
-            this.addToCurrentBalance(itemSelected.getPrice().negate());
-            itemSelected.setQuantitySold(itemSelected.getQuantitySold() + 1);
-            totalSales = totalSales.add(itemSelected.getPrice());
-            vendingLog.purchaseLog(LocalDateTime.now(), itemSelected.getName() + " " + itemSelected.getId(), startingBalance, this.getCurrentBalance());
-            System.out.println(this.getCurrentBalance());
-            String vendSound = itemSelected.vend();
-            System.out.println(vendSound);
-        } else {
-            System.err.println("Insufficient balance.");
+        try {
+            if (itemSelected == null) {
+                throw new UserInputException(input + " is not a valid selection.");
+            }
+            if (itemSelected.getQuantity() == 0) {
+                throw new UserInputException("Item " + itemSelected.getId() + " is sold out.");
+            }
+            if (getCurrentBalance().compareTo(itemSelected.getPrice()) >= 0) {
+                this.addToCurrentBalance(itemSelected.getPrice().negate());
+                itemSelected.setQuantitySold(itemSelected.getQuantitySold() + 1);
+                totalSales = totalSales.add(itemSelected.getPrice());
+                vendingLog.purchaseLog(itemSelected.getName() + " " + itemSelected.getId(), startingBalance, this.getCurrentBalance());
+                out.println(getCurrentBalance());
+                String vendSound = itemSelected.vend();
+                out.println(vendSound);
+                out.flush();
+            } else {
+                throw new InsufficientBalanceException("Your balance of " + formatMoney(getCurrentBalance())
+                        + " is insufficient for purchase of " + formatMoney(itemSelected.getPrice()) + ".");
+            }
+        } catch (Exception e) {
+            System.err.println();
+            System.err.println(e.getMessage());
+            errorLog.logError(e);
         }
     }
 
@@ -140,11 +160,12 @@ public class VendingMachine {
 
         } catch (FileNotFoundException ex) {
             System.err.println("Error loading machine data.");
+            errorLog.logError(ex);
         }
     }
 
     public void finishTransaction() {
-        System.out.println("Your change: " + formatMoney(getCurrentBalance()));
+        out.println("Your change: " + formatMoney(getCurrentBalance()));
 
         BigDecimal change = this.getCurrentBalance();
         BigDecimal startingBalance = this.getCurrentBalance();
@@ -154,13 +175,14 @@ public class VendingMachine {
         int numQuarters = quantityCoinsInRefund(new BigDecimal("0.25"));
         int numDimes = quantityCoinsInRefund(new BigDecimal("0.10"));
         int numNickles = quantityCoinsInRefund(new BigDecimal("0.05"));
-        System.out.println("Dollars: " + dollars);
-        System.out.println("Quarters: " + numQuarters);
-        System.out.println("Dimes: " + numDimes);
-        System.out.println("Nickels: " + numNickles);
+        out.println("Dollars: " + dollars);
+        out.println("Quarters: " + numQuarters);
+        out.println("Dimes: " + numDimes);
+        out.println("Nickels: " + numNickles);
+        out.flush();
 
-        vendingLog.purchaseLog(LocalDateTime.now(), "GIVE CHANGE", startingBalance, this.getCurrentBalance());
-        vendingLog.endTransaction();
+        vendingLog.purchaseLog("GIVE CHANGE", startingBalance, this.getCurrentBalance());
+        vendingLog.logSeparator();
     }
 
     private Integer quantityCoinsInRefund(BigDecimal coinValue) {
