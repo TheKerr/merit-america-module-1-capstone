@@ -10,6 +10,7 @@ public class ErrorLog extends Log {
         super(filePath);
     }
 
+    // Outputs the stracktrace of an error to the ErrorLog
     public void logError(Exception e) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);

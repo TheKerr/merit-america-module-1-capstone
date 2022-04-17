@@ -11,6 +11,8 @@ public class Log {
         initialize(filePath);
     }
 
+    // Called by constructor, creates a log file at the
+    // path passed in to constructor
     public void initialize(String filePath) {
         logFile = new File(filePath);
         try {
@@ -20,17 +22,20 @@ public class Log {
         }
     }
 
+    // Prints out a separator, useful between log entries
     public void logSeparator() {
         writeToLog("```");
     }
 
+    // Returns a current, formatted time
     public static String logCurrentTime() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
     }
 
+    // Writes to the caller's logfile whatever is passed in
     protected void writeToLog(String logData) {
-        try (PrintWriter logOutput = new PrintWriter(new FileOutputStream(logFile, true))) {
-            logOutput.write(logData + System.lineSeparator());
+        try (PrintWriter logFilePrinter = new PrintWriter(new FileOutputStream(logFile, true))) {
+            logFilePrinter.write(logData + System.lineSeparator());
         } catch (FileNotFoundException exception) {
             System.err.println("Log file is invalid.");
         }

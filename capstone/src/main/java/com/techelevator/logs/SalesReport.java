@@ -12,7 +12,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 public class SalesReport {
-
+    // Creates a report for all items in the vending machine
+    // Displays quantity sold of each item and total revenue
     public static void generateReport(Map<String, VendingMachineItem> items,
                                       BigDecimal totalSales) {
         File report = new File("SalesReport-" +

@@ -25,7 +25,6 @@ public class VendingTest {
         vendingMachine = new VendingMachine(TEST_VENDING_MACHINE_PATH, output);
     }
 
-
     @Test
     public void check_balance_is_zero_after_transaction_finished() {
         BigDecimal expected = new BigDecimal("0.00");
@@ -114,7 +113,5 @@ public class VendingTest {
         boolean actual = (indexOfSoldOut < outputList.indexOf("D1"));
         boolean expected = true;
         Assert.assertEquals(expected, actual);
-
     }
-
 }

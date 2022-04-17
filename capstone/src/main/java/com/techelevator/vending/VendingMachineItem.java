@@ -15,6 +15,8 @@ public class VendingMachineItem {
     // Initial quantity of each item stocked to machine
     private static final int DEFAULT_QUANTITY = 5;
 
+    // Constructor, sets default quantity of each item
+    // and resets quantity sold each time machine is started
     public VendingMachineItem(String id, String name, BigDecimal price, Vendable type) {
         this.id = id;
         this.name = name;

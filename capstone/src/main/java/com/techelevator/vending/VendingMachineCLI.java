@@ -18,15 +18,16 @@ public class VendingMachineCLI {
 	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE, MAIN_MENU_OPTION_EXIT };
 	private static final String[] PURCHASE_MENU_OPTIONS = { PURCHASE_MENU_OPTION_FEED_MONEY, PURCHASE_MENU_OPTION_SELECT_PRODUCT, PURCHASE_MENU_OPTION_FINISH_TRANSACTION};
 	private static final String PATH_TO_INVENTORY_FILE = "capstone/src/main/resources/vendingmachine.csv";
-
 	private Menu menu;
 	private VendingMachine vendingMachine;
 
+	// Instantiates the CLI
 	public VendingMachineCLI(Menu menu) {
 		this.menu = menu;
 		this.vendingMachine = new VendingMachine(PATH_TO_INVENTORY_FILE, System.out);
 	}
 
+	// Main run method for CLI, handles user input and display
 	public void run() {
 		// Initializes the main menu in a loop. Loop is only exited when finish transaction is executed
 		while (true) {

@@ -25,6 +25,8 @@ public class VendingMachine {
     private ErrorLog errorLog;
     private PrintWriter out;
 
+    // Takes in a datapath where it will stock items from a file
+    // Takes in an output where it will output it's console data
     public VendingMachine(String datapath, OutputStream output) {
         // Initialize a map for vending items
         vendingMachineItems = new TreeMap<String, VendingMachineItem>();
@@ -57,6 +59,8 @@ public class VendingMachine {
         this.currentBalance = currentBalance.add(dollarInput);
     }
 
+    public void decreaseUserBalance(BigDecimal dollarInput) { this.currentBalance = currentBalance.subtract(dollarInput);}
+
     // Adds a new item to the vending machine's items map
     public void stockVendingItem(VendingMachineItem item) {
         vendingMachineItems.put(item.getId(), item);
@@ -87,7 +91,7 @@ public class VendingMachine {
             } else {
                 BigDecimal inputBD = new BigDecimal(moneyIn);
                 this.increaseUserBalance(inputBD);
-                purchaseLog.recordPurchase("FEED MONEY", inputBD, getCurrentBalance());
+                purchaseLog.logTransaction("FEED MONEY", inputBD, getCurrentBalance());
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -100,7 +104,7 @@ public class VendingMachine {
     // sufficient balance. Plays sound on successful vend. Handles exceptions.
     public void selectProduct(String input) {
         BigDecimal startingBalance = getCurrentBalance();
-        VendingMachineItem itemSelected = getVendingItem(input);
+        VendingMachineItem itemSelected = getVendingItem(input.toUpperCase());
         try {
             if (itemSelected == null) {
                 throw new UserInputException(input + " is not a valid selection.");
@@ -109,16 +113,19 @@ public class VendingMachine {
                 throw new UserInputException("Item " + itemSelected.getId() + " is sold out.");
             }
             if (getCurrentBalance().compareTo(itemSelected.getPrice()) >= 0) {
-                increaseUserBalance(itemSelected.getPrice().negate());
+                decreaseUserBalance(itemSelected.getPrice());
                 itemSelected.setQuantitySold(itemSelected.getQuantitySold() + 1);
                 totalSales = totalSales.add(itemSelected.getPrice());
-                purchaseLog.recordPurchase(itemSelected.getName() + " " + itemSelected.getId(), startingBalance, getCurrentBalance());
+                purchaseLog.logTransaction(itemSelected.getName() + " " +
+                        itemSelected.getId(), startingBalance, getCurrentBalance());
                 String vendSound = itemSelected.vend();
                 out.println(vendSound);
                 out.flush();
             } else {
-                throw new InsufficientBalanceException("Your balance of " + formatMoney(getCurrentBalance())
-                        + " is insufficient for purchase of " + formatMoney(itemSelected.getPrice()) + ".");
+                throw new InsufficientBalanceException("Your balance of " +
+                        formatMoney(getCurrentBalance())
+                        + " is insufficient for purchase of " +
+                        formatMoney(itemSelected.getPrice()) + ".");
             }
         } catch (Exception e) {
             System.err.println();
@@ -157,7 +164,7 @@ public class VendingMachine {
         out.flush();
         // If user had greater than a $0 balance initially, record log
         if (!(startingBalance.equals(new BigDecimal(0)))) {
-            purchaseLog.recordPurchase("GIVE CHANGE", startingBalance,
+            purchaseLog.logTransaction("GIVE CHANGE", startingBalance,
                     getCurrentBalance());
             purchaseLog.logSeparator();
         }
