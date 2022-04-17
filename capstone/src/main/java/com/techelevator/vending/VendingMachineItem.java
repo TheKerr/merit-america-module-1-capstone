@@ -1,6 +1,6 @@
 package com.techelevator.vending;
 
-import com.techelevator.items.Consumable;
+import com.techelevator.items.Vendable;
 
 import java.math.BigDecimal;
 
@@ -9,13 +9,13 @@ public class VendingMachineItem {
     private String id;
     private String name;
     private BigDecimal price;
-    private Consumable type;
+    private Vendable type;
     private int quantitySold;
     private int currentStock;
     // Initial quantity of each item stocked to machine
     private static final int DEFAULT_QUANTITY = 5;
 
-    public VendingMachineItem(String id, String name, BigDecimal price, Consumable type) {
+    public VendingMachineItem(String id, String name, BigDecimal price, Vendable type) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -48,6 +48,6 @@ public class VendingMachineItem {
     // Vend decreases current stock by 1 and makes the item's sound
     public String vend() {
         currentStock -= 1;
-        return type.makeSound();
+        return type.vendSound();
     }
 }

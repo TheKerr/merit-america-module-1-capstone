@@ -4,23 +4,19 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public abstract class Log {
+public class Log {
 
     private File logFile;
-
     public Log(String filePath) {
         initialize(filePath);
     }
 
     public void initialize(String filePath) {
         logFile = new File(filePath);
-        //create file if it doesn't exist
-        if (!logFile.exists()) {
-            try {
-                logFile.createNewFile();
-            } catch (IOException exception) {
-                System.err.println(exception.getMessage());
-            }
+        try {
+            boolean isLogFileNew  = logFile.createNewFile();
+        } catch (IOException exception) {
+            System.err.println(exception.getMessage());
         }
     }
 

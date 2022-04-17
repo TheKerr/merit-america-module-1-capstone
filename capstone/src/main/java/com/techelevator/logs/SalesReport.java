@@ -13,12 +13,18 @@ import java.util.Map;
 
 public class SalesReport {
 
-    public static void generateReport(Map<String, VendingMachineItem> items, BigDecimal totalSales) {
-        File report = new File("SalesReport-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMM_dd_yy_hh-mm-ss-a")) + ".txt");
+    public static void generateReport(Map<String, VendingMachineItem> items,
+                                      BigDecimal totalSales) {
+        File report = new File("SalesReport-" +
+                LocalDateTime.now().format(DateTimeFormatter
+                        .ofPattern("MMM_dd_yy_hh-mm-ss-a"))
+                + ".txt");
         try (PrintWriter reportWriter = new PrintWriter(report)) {
 
             for(Map.Entry<String, VendingMachineItem> entry : items.entrySet()) {
-                reportWriter.write(entry.getValue().getName() + "|" + entry.getValue().getQuantitySold() + System.lineSeparator());
+                reportWriter.write(entry.getValue().getName()
+                        + "|" + entry.getValue().getQuantitySold()
+                        + System.lineSeparator());
             }
             reportWriter.write(System.lineSeparator());
             reportWriter.write("Total Sales: ");
@@ -28,5 +34,4 @@ public class SalesReport {
             System.err.println("Sales report file not found");
         }
     }
-
 }

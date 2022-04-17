@@ -3,7 +3,7 @@ package com.techelevator.vending;
 import com.techelevator.exceptions.InsufficientBalanceException;
 import com.techelevator.exceptions.UserInputException;
 import com.techelevator.logs.ErrorLog;
-import com.techelevator.logs.PurchaseLog;
+import com.techelevator.logs.TransactionLog;
 import com.techelevator.items.*;
 
 import java.io.File;
@@ -21,7 +21,7 @@ public class VendingMachine {
     private Map<String, VendingMachineItem> vendingMachineItems;
     private BigDecimal currentBalance;
     private BigDecimal totalSales;
-    private PurchaseLog purchaseLog;
+    private TransactionLog purchaseLog;
     private ErrorLog errorLog;
     private PrintWriter out;
 
@@ -30,7 +30,7 @@ public class VendingMachine {
         vendingMachineItems = new TreeMap<String, VendingMachineItem>();
         currentBalance = new BigDecimal(0);
         totalSales = new BigDecimal(0);
-        purchaseLog = new PurchaseLog("Log.txt");
+        purchaseLog = new TransactionLog("Log.txt");
         errorLog = new ErrorLog("ErrorLog.txt");
         // Stock the vending machine based on file path of stock file
         stockVendingMachine(datapath);
@@ -155,9 +155,12 @@ public class VendingMachine {
         out.println("Dimes: " + numDimes);
         out.println("Nickels: " + numNickles);
         out.flush();
-
-        purchaseLog.recordPurchase("GIVE CHANGE", startingBalance, getCurrentBalance());
-        purchaseLog.logSeparator();
+        // If user had greater than a $0 balance initially, record log
+        if (!(startingBalance.equals(new BigDecimal(0)))) {
+            purchaseLog.recordPurchase("GIVE CHANGE", startingBalance,
+                    getCurrentBalance());
+            purchaseLog.logSeparator();
+        }
     }
 
     // Stocks the vending machine by reading .csv data from a file
@@ -173,7 +176,7 @@ public class VendingMachine {
                 String lineItemName = lineInfo[1];
                 BigDecimal lineItemPrice = new BigDecimal(lineInfo[2]);
                 String lineItemCategory = lineInfo[3];
-                Consumable currentConsumable = null;
+                Vendable currentConsumable = null;
                 switch(lineItemCategory) {
                     case "Chip":
                         currentConsumable = new Chips();

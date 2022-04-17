@@ -1,9 +1,9 @@
 package com.techelevator.items;
 
-public class Chips implements Consumable {
+public class Chips implements Vendable {
 
     @Override
-    public String makeSound() {
+    public String vendSound() {
         return "Crunch Crunch, Yum!";
     }
 }
