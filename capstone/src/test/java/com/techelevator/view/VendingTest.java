@@ -29,7 +29,7 @@ public class VendingTest {
     @Test
     public void check_balance_is_zero_after_transaction_finished() {
         BigDecimal expected = new BigDecimal("0.00");
-        vendingMachine.addToCurrentBalance(new BigDecimal("5"));
+        vendingMachine.increaseUserBalance(new BigDecimal("5"));
         vendingMachine.selectProduct("C4");
         vendingMachine.finishTransaction();
         BigDecimal actual = vendingMachine.getCurrentBalance();
@@ -39,9 +39,9 @@ public class VendingTest {
     @Test
     public void add_to_balance_after_purchase_calculation_correct() {
         BigDecimal expected = new BigDecimal("8.50");
-        vendingMachine.addToCurrentBalance(new BigDecimal("5"));
+        vendingMachine.increaseUserBalance(new BigDecimal("5"));
         vendingMachine.selectProduct("C4");
-        vendingMachine.addToCurrentBalance(new BigDecimal("5"));
+        vendingMachine.increaseUserBalance(new BigDecimal("5"));
         BigDecimal actual = vendingMachine.getCurrentBalance();
         Assert.assertEquals(expected, actual);
     }
@@ -49,7 +49,7 @@ public class VendingTest {
     @Test
     public void balance_after_purchase_correct() {
         BigDecimal expected = new BigDecimal("3.50");
-        vendingMachine.addToCurrentBalance(new BigDecimal("5"));
+        vendingMachine.increaseUserBalance(new BigDecimal("5"));
         vendingMachine.selectProduct("C4");
         BigDecimal actual = vendingMachine.getCurrentBalance();
         Assert.assertEquals(expected, actual);
@@ -79,7 +79,7 @@ public class VendingTest {
         Boolean actual = true;
         Boolean expected = true;
         for (Map.Entry<String, VendingMachineItem> itemEntry : vendingMachine.getAllVendingItems().entrySet()) {
-            if(itemEntry.getValue().getQuantity() != 5) {
+            if(itemEntry.getValue().getCurrentStock() != 5) {
                 actual = false;
             }
         }
@@ -104,7 +104,7 @@ public class VendingTest {
     public void display_sold_out_when_quantity_zero() {
         vendingMachine.setCurrentBalance(new BigDecimal("10"));
 
-        while(vendingMachine.getVendingItem("C4").getQuantity() > 0) {
+        while(vendingMachine.getVendingItem("C4").getCurrentStock() > 0) {
             vendingMachine.selectProduct("C4");
         }
 

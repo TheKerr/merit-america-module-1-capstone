@@ -17,19 +17,21 @@ public class VendingMachineCLI {
 	private static final String[] HIDDEN_MENU_OPTIONS = { MAIN_MENU_OPTION_SALES_REPORT };
 	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE, MAIN_MENU_OPTION_EXIT };
 	private static final String[] PURCHASE_MENU_OPTIONS = { PURCHASE_MENU_OPTION_FEED_MONEY, PURCHASE_MENU_OPTION_SELECT_PRODUCT, PURCHASE_MENU_OPTION_FINISH_TRANSACTION};
+	private static final String PATH_TO_INVENTORY_FILE = "capstone/src/main/resources/vendingmachine.csv";
 
 	private Menu menu;
 	private VendingMachine vendingMachine;
 
 	public VendingMachineCLI(Menu menu) {
 		this.menu = menu;
-		this.vendingMachine = new VendingMachine("capstone/src/main/resources/vendingmachine.csv", System.out);
+		this.vendingMachine = new VendingMachine(PATH_TO_INVENTORY_FILE, System.out);
 	}
 
 	public void run() {
-		// Initializes the main menu
+		// Initializes the main menu in a loop. Loop is only exited when finish transaction is executed
 		while (true) {
-			// Prompts user, processes input if matches main menu option
+			// Prompts user for input, processes input if it matches a valid menu option
+			// Hidden options are still selectable but are not displayed to user
 			String choice = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS, HIDDEN_MENU_OPTIONS);
 
 			if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
@@ -42,11 +44,11 @@ public class VendingMachineCLI {
 					System.out.println();
 					if (choice.equals(PURCHASE_MENU_OPTION_FEED_MONEY)) {
 						// prompt user to insert money
-						System.out.println();
 						System.out.println("This machine accepts $1, $2, $5, & $10");
-						System.out.println("Please feed money into the machine: ");
-						String moneyIn = menu.getIn().nextLine();
-						vendingMachine.feedMoney(moneyIn);
+						System.out.println();
+						System.out.println("Please insert cash into the machine: ");
+						String moneyInserted = menu.getIn().nextLine();
+						vendingMachine.feedMoney(moneyInserted);
 					} else if (choice.equals(PURCHASE_MENU_OPTION_SELECT_PRODUCT)) {
 						// show user items for sale, prompt for input of the selected item
 						System.out.println(vendingMachine.displayVendingMachineItems());
@@ -70,9 +72,7 @@ public class VendingMachineCLI {
 		}
 	}
 
-
-
-
+	// Program start
 	public static void main(String[] args) {
 		Menu menu = new Menu(System.in, System.out);
 		VendingMachineCLI cli = new VendingMachineCLI(menu);

@@ -14,8 +14,7 @@ public class ErrorLog extends Log {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         e.printStackTrace(pw);
-        writeToLog(LocalDateTime.now() + System.lineSeparator() + e.getMessage() + System.lineSeparator() + sw);
+        writeToLog(Log.logCurrentTime() + System.lineSeparator() + e.getMessage() + System.lineSeparator() + sw);
         logSeparator();
     }
-
 }

@@ -14,7 +14,6 @@ public abstract class Log {
 
     public void initialize(String filePath) {
         logFile = new File(filePath);
-
         //create file if it doesn't exist
         if (!logFile.exists()) {
             try {
@@ -25,20 +24,19 @@ public abstract class Log {
         }
     }
 
-    protected void writeToLog(String logData) {
-        try (PrintWriter logOutput = new PrintWriter(new FileOutputStream(logFile, true))) {
-            logOutput.write(logData + System.lineSeparator());
-        } catch (FileNotFoundException exception) {
-            System.err.println("Invalid log file.");
-        }
-    }
-
-    protected static String formatTime(LocalDateTime time) {
-        return time.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
-    }
-
     public void logSeparator() {
         writeToLog("```");
     }
 
+    public static String logCurrentTime() {
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+    }
+
+    protected void writeToLog(String logData) {
+        try (PrintWriter logOutput = new PrintWriter(new FileOutputStream(logFile, true))) {
+            logOutput.write(logData + System.lineSeparator());
+        } catch (FileNotFoundException exception) {
+            System.err.println("Log file is invalid.");
+        }
+    }
 }

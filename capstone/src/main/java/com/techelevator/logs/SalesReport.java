@@ -14,7 +14,7 @@ import java.util.Map;
 public class SalesReport {
 
     public static void generateReport(Map<String, VendingMachineItem> items, BigDecimal totalSales) {
-        File report = new File(LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM-dd-yyyy-HH-mm-ss")) + ".txt");
+        File report = new File("SalesReport-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMM_dd_yy_hh-mm-ss-a")) + ".txt");
         try (PrintWriter reportWriter = new PrintWriter(report)) {
 
             for(Map.Entry<String, VendingMachineItem> entry : items.entrySet()) {
