@@ -1,7 +1,7 @@
 package com.techelevator.view;
 
 import com.techelevator.vending.VendingMachine;
-import com.techelevator.items.VendingMachineItem;
+import com.techelevator.items.VendingItem;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,7 +77,7 @@ public class VendingTest {
     public void has_correct_initial_stock() {
         Boolean actual = true;
         Boolean expected = true;
-        for (Map.Entry<String, VendingMachineItem> itemEntry : vendingMachine.getAllVendingItems().entrySet()) {
+        for (Map.Entry<String, VendingItem> itemEntry : vendingMachine.getAllVendingItems().entrySet()) {
             if(itemEntry.getValue().getCurrentStock() != 5) {
                 actual = false;
             }

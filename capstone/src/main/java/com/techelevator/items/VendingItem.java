@@ -2,7 +2,7 @@ package com.techelevator.items;
 
 import java.math.BigDecimal;
 
-public class VendingMachineItem {
+public class VendingItem {
 
     private String vendingID;
     private String name;
@@ -15,7 +15,7 @@ public class VendingMachineItem {
 
     // Constructor, sets default quantity of each item
     // and resets quantity sold each time machine is started
-    public VendingMachineItem(String vendingID, String name, BigDecimal price, Vendable type) {
+    public VendingItem(String vendingID, String name, BigDecimal price, Vendable type) {
         this.vendingID = vendingID;
         this.name = name;
         this.price = price;

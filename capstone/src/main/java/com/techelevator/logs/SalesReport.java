@@ -1,7 +1,7 @@
 package com.techelevator.logs;
 
 import com.techelevator.vending.VendingMachine;
-import com.techelevator.items.VendingMachineItem;
+import com.techelevator.items.VendingItem;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,7 +14,7 @@ import java.util.Map;
 public class SalesReport {
     // Creates a report for all items in the vending machine
     // Displays quantity sold of each item and total revenue
-    public static void generateReport(Map<String, VendingMachineItem> items,
+    public static void generateReport(Map<String, VendingItem> items,
                                       BigDecimal totalSales) {
         File report = new File("SalesReport-" +
                 LocalDateTime.now().format(DateTimeFormatter
@@ -22,7 +22,7 @@ public class SalesReport {
                 + ".txt");
         try (PrintWriter reportWriter = new PrintWriter(report)) {
 
-            for(Map.Entry<String, VendingMachineItem> entry : items.entrySet()) {
+            for(Map.Entry<String, VendingItem> entry : items.entrySet()) {
                 reportWriter.write(entry.getValue().getName()
                         + "|" + entry.getValue().getQuantitySold()
                         + System.lineSeparator());

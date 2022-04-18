@@ -18,7 +18,7 @@ import java.util.TreeMap;
 
 public class VendingMachine {
 
-    private Map<String, VendingMachineItem> vendingMachineItems;
+    private Map<String, VendingItem> vendingMachineItems;
     private BigDecimal currentBalance;
     private BigDecimal totalSales;
     private TransactionLog purchaseLog;
@@ -29,7 +29,7 @@ public class VendingMachine {
     // Takes in an output where it will output it's console data
     public VendingMachine(String datapath, OutputStream output) {
         // Initialize a map for vending items
-        vendingMachineItems = new TreeMap<String, VendingMachineItem>();
+        vendingMachineItems = new TreeMap<String, VendingItem>();
         currentBalance = new BigDecimal(0);
         totalSales = new BigDecimal(0);
         purchaseLog = new TransactionLog("Log.txt");
@@ -40,10 +40,10 @@ public class VendingMachine {
     }
 
     // Getters & setters
-    public VendingMachineItem getVendingItem(String id) {
+    public VendingItem getVendingItem(String id) {
         return vendingMachineItems.get(id);
     }
-    public Map<String, VendingMachineItem> getAllVendingItems() {
+    public Map<String, VendingItem> getAllVendingItems() {
         return vendingMachineItems;
     }
     public BigDecimal getCurrentBalance() {
@@ -62,7 +62,7 @@ public class VendingMachine {
     public void decreaseUserBalance(BigDecimal dollarInput) { this.currentBalance = currentBalance.subtract(dollarInput);}
 
     // Adds a new item to the vending machine's items map
-    public void stockVendingItem(VendingMachineItem item) {
+    public void stockVendingItem(VendingItem item) {
         vendingMachineItems.put(item.getVendingID(), item);
     }
 
@@ -74,8 +74,8 @@ public class VendingMachine {
     // Display all items in vending machine including id, name, price, and stock quantity
     public String displayVendingMachineItems() {
         String display = System.lineSeparator();
-        for(Map.Entry<String, VendingMachineItem> itemEntry : getAllVendingItems().entrySet()) {
-            VendingMachineItem item = itemEntry.getValue();
+        for(Map.Entry<String, VendingItem> itemEntry : getAllVendingItems().entrySet()) {
+            VendingItem item = itemEntry.getValue();
             display += item.getVendingID() + " " + item.getName() + " " +
                     formatMoney(item.getPrice()) + " " + "Stock: " +
                     (item.getCurrentStock() > 0 ? item.getCurrentStock() : "Sold out") + System.lineSeparator();
@@ -104,7 +104,7 @@ public class VendingMachine {
     // sufficient balance. Plays sound on successful vend. Handles exceptions.
     public void selectProduct(String input) {
         BigDecimal startingBalance = getCurrentBalance();
-        VendingMachineItem itemSelected = getVendingItem(input.toUpperCase());
+        VendingItem itemSelected = getVendingItem(input.toUpperCase());
         try {
             if (itemSelected == null) {
                 throw new UserInputException(input + " is not a valid selection.");
@@ -176,7 +176,7 @@ public class VendingMachine {
     private void stockVendingMachine(String dataPath) {
         try (Scanner fileScanner = new Scanner(new File(dataPath))) {
             while (fileScanner.hasNextLine()) {
-                VendingMachineItem currentItem;
+                VendingItem currentItem;
                 String currentLine = fileScanner.nextLine();
                 String[] lineInfo = currentLine.split("\\|");
                 String lineItemID = lineInfo[0];
@@ -198,7 +198,7 @@ public class VendingMachine {
                         currentVendable = new Gum();
                         break;
                 }
-                currentItem = new VendingMachineItem(lineItemID,
+                currentItem = new VendingItem(lineItemID,
                         lineItemName, lineItemPrice, currentVendable);
                 stockVendingItem(currentItem);
             }
