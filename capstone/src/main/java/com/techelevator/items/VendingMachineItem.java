@@ -1,12 +1,10 @@
-package com.techelevator.vending;
-
-import com.techelevator.items.Vendable;
+package com.techelevator.items;
 
 import java.math.BigDecimal;
 
 public class VendingMachineItem {
 
-    private String id;
+    private String vendingID;
     private String name;
     private BigDecimal price;
     private Vendable type;
@@ -17,8 +15,8 @@ public class VendingMachineItem {
 
     // Constructor, sets default quantity of each item
     // and resets quantity sold each time machine is started
-    public VendingMachineItem(String id, String name, BigDecimal price, Vendable type) {
-        this.id = id;
+    public VendingMachineItem(String vendingID, String name, BigDecimal price, Vendable type) {
+        this.vendingID = vendingID;
         this.name = name;
         this.price = price;
         this.type = type;
@@ -42,8 +40,8 @@ public class VendingMachineItem {
     public BigDecimal getPrice() {
         return price;
     }
-    public String getId() {
-        return id;
+    public String getVendingID() {
+        return vendingID;
     }
     // Getters & Setters end
 

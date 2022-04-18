@@ -63,7 +63,7 @@ public class VendingMachine {
 
     // Adds a new item to the vending machine's items map
     public void stockVendingItem(VendingMachineItem item) {
-        vendingMachineItems.put(item.getId(), item);
+        vendingMachineItems.put(item.getVendingID(), item);
     }
 
     // Returns total sales since machine was started
@@ -76,7 +76,7 @@ public class VendingMachine {
         String display = System.lineSeparator();
         for(Map.Entry<String, VendingMachineItem> itemEntry : getAllVendingItems().entrySet()) {
             VendingMachineItem item = itemEntry.getValue();
-            display += item.getId() + " " + item.getName() + " " +
+            display += item.getVendingID() + " " + item.getName() + " " +
                     formatMoney(item.getPrice()) + " " + "Stock: " +
                     (item.getCurrentStock() > 0 ? item.getCurrentStock() : "Sold out") + System.lineSeparator();
         }
@@ -110,14 +110,14 @@ public class VendingMachine {
                 throw new UserInputException(input + " is not a valid selection.");
             }
             if (itemSelected.getCurrentStock() == 0) {
-                throw new UserInputException("Item " + itemSelected.getId() + " is sold out.");
+                throw new UserInputException("Item " + itemSelected.getVendingID() + " is sold out.");
             }
-            if (getCurrentBalance().compareTo(itemSelected.getPrice()) >= 0) {
+            if (startingBalance.compareTo(itemSelected.getPrice()) >= 0) {
                 decreaseUserBalance(itemSelected.getPrice());
                 itemSelected.setQuantitySold(itemSelected.getQuantitySold() + 1);
                 totalSales = totalSales.add(itemSelected.getPrice());
                 purchaseLog.logTransaction(itemSelected.getName() + " " +
-                        itemSelected.getId(), startingBalance, getCurrentBalance());
+                        itemSelected.getVendingID(), startingBalance, getCurrentBalance());
                 String vendSound = itemSelected.vend();
                 out.println(vendSound);
                 out.flush();
@@ -183,27 +183,28 @@ public class VendingMachine {
                 String lineItemName = lineInfo[1];
                 BigDecimal lineItemPrice = new BigDecimal(lineInfo[2]);
                 String lineItemCategory = lineInfo[3];
-                Vendable currentConsumable = null;
+                Vendable currentVendable = null;
                 switch(lineItemCategory) {
                     case "Chip":
-                        currentConsumable = new Chips();
+                        currentVendable = new Chips();
                         break;
                     case "Candy":
-                        currentConsumable = new Candy();
+                        currentVendable = new Candy();
                         break;
                     case "Drink":
-                        currentConsumable = new Drink();
+                        currentVendable = new Drink();
                         break;
                     case "Gum":
-                        currentConsumable = new Gum();
+                        currentVendable = new Gum();
                         break;
                 }
-                currentItem = new VendingMachineItem(lineItemID, lineItemName, lineItemPrice, currentConsumable);
+                currentItem = new VendingMachineItem(lineItemID,
+                        lineItemName, lineItemPrice, currentVendable);
                 stockVendingItem(currentItem);
             }
 
         } catch (FileNotFoundException ex) {
-            System.err.println("Error loading machine data.");
+            System.err.println("Machine data file not found.");
             errorLog.logError(ex);
         }
     }

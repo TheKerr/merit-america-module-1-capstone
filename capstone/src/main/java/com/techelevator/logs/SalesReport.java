@@ -1,7 +1,7 @@
 package com.techelevator.logs;
 
 import com.techelevator.vending.VendingMachine;
-import com.techelevator.vending.VendingMachineItem;
+import com.techelevator.items.VendingMachineItem;
 
 import java.io.File;
 import java.io.FileNotFoundException;

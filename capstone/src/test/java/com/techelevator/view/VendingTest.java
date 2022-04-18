@@ -1,7 +1,7 @@
 package com.techelevator.view;
 
 import com.techelevator.vending.VendingMachine;
-import com.techelevator.vending.VendingMachineItem;
+import com.techelevator.items.VendingMachineItem;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
